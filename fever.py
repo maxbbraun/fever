@@ -6,6 +6,10 @@ import numpy as np
 from pylepton import Lepton
 
 FLAGS = flags.FLAGS
+flags.DEFINE_integer('min_temperature', 23715, 'The minimum temperature in'
+                     ' centikelvin (for enhancing image contrast).')
+flags.DEFINE_integer('max_temperature', 37315, 'The maximum temperature in'
+                     ' centikelvin (for enhancing image contrast).')
 flags.DEFINE_float('face_confidence', 0.5,
                    'The confidence threshold for face detection.')
 flags.DEFINE_bool('display_metric', False, 'Whether to display metric units.')
@@ -23,21 +27,24 @@ def format_temperature(temperature):
 def main(_):
     with Lepton() as lepton:
         raw_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint16)
-        norm_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1),
-                                 dtype=np.uint16)
         rgb_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
+        scale_factor = (FLAGS.max_temperature - FLAGS.min_temperature) // 255
 
         while True:
             # Get the latest frame from the thermal camera.
             lepton.capture(data_buffer=raw_buffer)
 
+            # Prepare the raw temperature data for face detection: Map to a
+            # normal range before reducing the bit depth and min/max normalize
+            # for better contrast before converting to RGB.
+            scaled_buffer = np.uint8((raw_buffer - FLAGS.min_temperature)
+                                     // scale_factor)
+            cv2.normalize(src=scaled_buffer, dst=scaled_buffer, alpha=0,
+                          beta=255, norm_type=cv2.NORM_MINMAX)
+            cv2.cvtColor(src=scaled_buffer, dst=rgb_buffer,
+                         code=cv2.COLOR_GRAY2RGB)
+
             # Detect any faces in the frame.
-            # TODO: Normalize to room/body temperature range instead.
-            np.right_shift(raw_buffer, 8, out=norm_buffer)  # 16 bit -> 8 bit
-            cv2.cvtColor(src=np.uint8(norm_buffer), dst=rgb_buffer,
-                         code=cv2.COLOR_GRAY2RGB)  # Grayscale -> RGB
-            cv2.normalize(src=rgb_buffer, dst=rgb_buffer, alpha=0, beta=255,
-                          norm_type=cv2.NORM_MINMAX)  # Enhance contrast
             faces, _ = cv.detect_face(rgb_buffer,
                                       threshold=FLAGS.face_confidence)
 
