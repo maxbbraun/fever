@@ -51,11 +51,7 @@ def main(_):
             # Find the (highest) temperature of each face.
             print('%d faces' % len(faces))
             for face in faces:
-                left = face[0]
-                top = face[1]
-                right = face[2] + 1
-                bottom = face[3] + 1
-                crop = raw_buffer[left:right, top:bottom]
+                crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
                 if crop.size == 0:
                     continue
                 temperature = np.max(crop)
