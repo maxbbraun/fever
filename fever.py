@@ -49,7 +49,10 @@ def main(_):
                                       threshold=FLAGS.face_confidence)
 
             # Find the (highest) temperature of each face.
-            print('%d faces' % len(faces))
+            if len(faces) == 1:
+                print('1 person')
+            else:
+                print('%d people' % len(faces))
             for face in faces:
                 crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
                 if crop.size == 0:
