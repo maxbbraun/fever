@@ -11,13 +11,13 @@ flags.DEFINE_float('face_confidence', 0.5,
 flags.DEFINE_bool('display_metric', False, 'Whether to display metric units.')
 
 
-def format_temp(temp):
-    # Raw data is Kelvin * 100.
-    celsius = temp / 100 - 273.15
+def format_temperature(temperature):
+    # The raw temperature is in centikelvin.
+    celsius = temperature / 100 - 273.15
     if FLAGS.display_metric:
-        return "%.2f °C" % celsius
+        return "%.f °C" % celsius
     fahrenheit = celsius * 9 / 5 + 32
-    return "%.2f °F" % fahrenheit
+    return "%.f °F" % fahrenheit
 
 
 def main(_):
@@ -51,8 +51,8 @@ def main(_):
                 crop = raw_buffer[left:right, top:bottom]
                 if crop.size == 0:
                     continue
-                temp = np.max(crop)
-                print(format_temp(temp))
+                temperature = np.max(crop)
+                print(format_temperature(temperature))
 
 
 if __name__ == '__main__':
