@@ -20,8 +20,9 @@ def format_temperature(temperature):
     celsius = temperature / 100 - 273.15
     if FLAGS.display_metric:
         return '%.f °C' % celsius
-    fahrenheit = celsius * 9 / 5 + 32
-    return '%.f °F' % fahrenheit
+    else:
+        fahrenheit = celsius * 9 / 5 + 32
+        return '%.f °F' % fahrenheit
 
 
 def main(_):
