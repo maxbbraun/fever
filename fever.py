@@ -19,9 +19,9 @@ def format_temperature(temperature):
     # The raw temperature is in centikelvin.
     celsius = temperature / 100 - 273.15
     if FLAGS.display_metric:
-        return "%.f °C" % celsius
+        return '%.f °C' % celsius
     fahrenheit = celsius * 9 / 5 + 32
-    return "%.f °F" % fahrenheit
+    return '%.f °F' % fahrenheit
 
 
 def main(_):
@@ -49,7 +49,7 @@ def main(_):
                                       threshold=FLAGS.face_confidence)
 
             # Find the (highest) temperature of each face.
-            print("%d faces" % len(faces))
+            print('%d faces' % len(faces))
             for face in faces:
                 left = face[0]
                 top = face[1]
