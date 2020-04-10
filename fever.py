@@ -13,7 +13,7 @@ flags.DEFINE_integer('max_temperature', 37315, 'The maximum temperature in'
                      ' centikelvin (for enhancing image contrast).')
 flags.DEFINE_float('face_confidence', 0.5,
                    'The confidence threshold for face detection.')
-flags.DEFINE_bool('display_metric', False, 'Whether to display metric units.')
+flags.DEFINE_bool('display_metric', True, 'Whether to display metric units.')
 
 
 def format_temperature(temperature):
