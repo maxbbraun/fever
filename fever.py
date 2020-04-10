@@ -1,5 +1,6 @@
 from absl import app
 from absl import flags
+from absl import logging
 import cv2
 import cvlib as cv
 import numpy as np
@@ -26,11 +27,13 @@ def format_temperature(temperature):
 
 
 def main(_):
-    with Lepton() as lepton:
-        raw_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint16)
-        rgb_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
-        scale_factor = (FLAGS.max_temperature - FLAGS.min_temperature) // 255
+    # Initialize thermal image buffers.
+    raw_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint16)
+    rgb_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
+    scale_factor = (FLAGS.max_temperature - FLAGS.min_temperature) // 255
 
+    # Start the data processing loop.
+    with Lepton() as lepton:
         while True:
             # Get the latest frame from the thermal camera.
             lepton.capture(data_buffer=raw_buffer)
@@ -49,17 +52,23 @@ def main(_):
             faces, _ = cv.detect_face(rgb_buffer,
                                       threshold=FLAGS.face_confidence)
 
+            # TODO: Estimate distance based on face size.
+
+            # TODO: Model thermal attenuation based on distance and ambient
+            #       temperature, pressure, and humidity.
+
             # Find the (highest) temperature of each face.
             if len(faces) == 1:
-                print('1 person')
+                logging.info('1 person')
             else:
-                print('%d people' % len(faces))
+                logging.info('%d people' % len(faces))
             for face in faces:
                 crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
                 if crop.size == 0:
+                    logging.warning('Empty crop')
                     continue
                 temperature = np.max(crop)
-                print(format_temperature(temperature))
+                logging.info(format_temperature(temperature))
 
 
 if __name__ == '__main__':
