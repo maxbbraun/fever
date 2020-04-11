@@ -48,7 +48,7 @@ def main(_):
     with Lepton() as lepton:
         while True:
             # Acquire ambient sensor readings.
-            if not ambient.get_sensor_data() or not ambient.data.heat_stable:
+            if not ambient.get_sensor_data():
                 logging.warning('Ambient sensor data not ready')
             ambient_data = ambient.data
             logging.debug('Ambient temperature: %.f °C'
