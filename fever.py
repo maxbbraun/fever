@@ -5,7 +5,7 @@ import bme680
 import cv2
 import cvlib as cv
 import numpy as np
-from pylepton import Lepton
+from pylepton.pylepton import Lepton
 from smbus2 import SMBus
 
 FLAGS = flags.FLAGS
