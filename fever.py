@@ -53,7 +53,7 @@ def main(_):
             ambient_data = ambient.data
             logging.debug('Ambient temperature: %.f °C'
                           % ambient_data.temperature)
-            logging.debug('Ambient pressure: %.f hPa'
+            logging.debug('Ambient pressure: %.f kPa'
                           % ambient_data.pressure)
             logging.debug('Ambient humidity: %.f %%'
                           % ambient_data.humidity)
