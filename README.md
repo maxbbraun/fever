@@ -4,7 +4,7 @@ A contactless fever thermometer with auto-aim. Combines a thermal camera with fa
 
 ## Parts
 
-- [FLIR Radiometric Lepton Dev Kit V2](https://www.sparkfun.com/products/15948) (thermal camera)
+- [FLIR Radiometric Lepton Dev Kit](https://www.sparkfun.com/products/retired/14654) (thermal camera)
 - [BME680 Breakout Board](https://www.sparkfun.com/products/15743) (ambient temperature, pressure, and humidity sensor)
 - [Raspberry Pi 4 Model B](https://www.sparkfun.com/products/15447) (or similar model)
 
