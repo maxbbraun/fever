@@ -33,6 +33,7 @@ pip3 install opencv-contrib-python
 pip3 install numpy absl-py cvlib
 pip3 install smbus2 bme680
 git clone https://github.com/groupgets/pylepton.git
+cd pylepton && python setup.py install && cd ..
 ```
 
 ## Run
