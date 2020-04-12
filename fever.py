@@ -7,6 +7,7 @@ import cvlib as cv
 import numpy as np
 from pylepton.pylepton import Lepton
 from smbus2 import SMBus
+from time import time
 
 FLAGS = flags.FLAGS
 flags.DEFINE_integer('min_temperature', 23715, 'The minimum temperature in'
@@ -47,6 +48,8 @@ def main(_):
     # Start the data processing loop.
     with Lepton() as lepton:
         while True:
+            start_time = time()
+
             # Acquire ambient sensor readings.
             if not ambient.get_sensor_data():
                 logging.warning('Ambient sensor data not ready')
@@ -92,6 +95,11 @@ def main(_):
                     continue
                 temperature = np.max(crop)
                 logging.info(format_temperature(temperature))
+
+            # Calculate timing stats.
+            duration = time() - start_time
+            logging.debug('Frame took %.f ms (%.2f Hz)' % (
+                duration * 1000, 1 / duration))
 
 
 if __name__ == '__main__':
