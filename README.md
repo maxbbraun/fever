@@ -6,7 +6,7 @@ A contactless fever thermometer with auto-aim. Combines a thermal camera with fa
 
 - [FLIR Radiometric Lepton Dev Kit V2](https://www.sparkfun.com/products/15948) (thermal camera)
 - [BME680 Breakout Board](https://www.sparkfun.com/products/15743) (ambient temperature, pressure, and humidity sensor)
-- [Raspberry Pi Zero W](https://www.sparkfun.com/products/14277) (or similar)
+- [Raspberry Pi 4 Model B](https://www.sparkfun.com/products/15447) (or similar model)
 
 ## Assembly
 
@@ -24,8 +24,10 @@ scp fever.py pi@<RASPBERRY_PI_IP>:/home/pi/
 
 ```
 ssh pi@<RASPBERRY_PI_IP>
+sudo apt-get update
+sudo apt-get install -y python3-opencv libatlas-base-dev libjasper-dev \
+    libhdf5-dev libqt4-dev
 python3 -m venv venv && . venv/bin/activate
-sudo apt-get install libatlas-base-dev libjasper-dev
 pip3 install --no-cache-dir tensorflow
 pip3 install opencv-contrib-python
 pip3 install numpy absl-py cvlib
