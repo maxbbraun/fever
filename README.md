@@ -25,15 +25,17 @@ scp fever.py pi@<RASPBERRY_PI_IP>:/home/pi/
 ```
 ssh pi@<RASPBERRY_PI_IP>
 sudo apt-get update
-sudo apt-get install -y python3-opencv libatlas-base-dev libjasper-dev \
-    libhdf5-dev libqt4-dev
+sudo apt-get install -y python3-opencv libatlas-base-dev libjasper-dev libhdf5-dev libqt4-dev
 python3 -m venv venv && . venv/bin/activate
 pip3 install --no-cache-dir tensorflow
 pip3 install opencv-contrib-python
-pip3 install numpy absl-py cvlib
+pip3 install numpy absl-py scikit-image imutils
 pip3 install smbus2 bme680
 git clone https://github.com/groupgets/pylepton.git
 cd pylepton && python setup.py install && cd ..
+git clone https://github.com/matterport/Mask_RCNN.git
+cd Mask_RCNN && python setup.py install && cd ..
+wget https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5
 ```
 
 ## Run

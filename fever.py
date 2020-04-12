@@ -3,7 +3,9 @@ from absl import flags
 from absl import logging
 import bme680
 import cv2
-import cvlib as cv
+from imutils import resize
+from mrcnn.config import Config
+from mrcnn import model as modellib
 import numpy as np
 from pylepton import Lepton
 from smbus2 import SMBus
@@ -18,6 +20,14 @@ flags.DEFINE_float('face_confidence', 0.5,
                    'The confidence threshold for face detection.')
 flags.DEFINE_bool('display_metric', True, 'Whether to display metric units.')
 
+COCO_PERSON_CLASS_ID = 1
+
+
+class MrcnnConfig(Config):
+    NAME = 'coco_inference'
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+    NUM_CLASSES = 81
 
 def format_temperature(temperature):
     # The raw temperature is in centikelvin.
@@ -44,6 +54,12 @@ def main(_):
     raw_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint16)
     rgb_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
     scale_factor = (FLAGS.max_temperature - FLAGS.min_temperature) // 255
+
+    # TODO
+    mrcnn_config = MrcnnConfig()
+    model = modellib.MaskRCNN(mode='inference', config=mrcnn_config,
+                              model_dir='/tmp/')
+    model.load_weights('mask_rcnn_coco.h5', by_name=True)
 
     # Start the data processing loop.
     with Lepton() as lepton:
@@ -74,9 +90,14 @@ def main(_):
             cv2.cvtColor(src=scaled_buffer, dst=rgb_buffer,
                          code=cv2.COLOR_GRAY2RGB)
 
+            # TODO
+            resized = resize(rgb_buffer, width=512) # TODO
+            detections = model.detect([resized], verbose=1)
+            logging.info(detections)
+
             # Detect any faces in the frame.
-            faces, _ = cv.detect_face(rgb_buffer,
-                                      threshold=FLAGS.face_confidence)
+            # faces, _ = cv.detect_face(rgb_buffer,
+            #                           threshold=FLAGS.face_confidence)
 
             # TODO: Estimate distance based on face size.
 
@@ -84,17 +105,17 @@ def main(_):
             #       temperature, pressure, and humidity.
 
             # Find the (highest) temperature of each face.
-            if len(faces) == 1:
-                logging.info('1 person')
-            else:
-                logging.info('%d people' % len(faces))
-            for face in faces:
-                crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
-                if crop.size == 0:
-                    logging.warning('Empty crop')
-                    continue
-                temperature = np.max(crop)
-                logging.info(format_temperature(temperature))
+            # if len(faces) == 1:
+            #     logging.info('1 person')
+            # else:
+            #     logging.info('%d people' % len(faces))
+            # for face in faces:
+            #     crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
+            #     if crop.size == 0:
+            #         logging.warning('Empty crop')
+            #         continue
+            #     temperature = np.max(crop)
+            #     logging.info(format_temperature(temperature))
 
             # Calculate timing stats.
             duration = time() - start_time
