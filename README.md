@@ -10,10 +10,19 @@ A contactless fever thermometer with auto-aim. Combines a thermal camera with fa
 
 ## Assembly
 
-[SparkFun FLIR Lepton Hookup Guide](https://learn.sparkfun.com/tutorials/flir-lepton-hookup-guide/all)
-
 ![breadboard front](breadboard-front.jpg)
 ![breadboard back](breadboard-back.jpg)
+
+## Setup
+
+Image [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)
+
+`sudo raspi-config`
+- `Network Options > Wi-fi`
+- `Boot Options > Desktop / CLI > Console Autologin`
+- `Interfacing Options > SSH`
+- `Interfacing Options > SPI`
+- `Interfacing Options > I2C`
 
 ## Install
 
@@ -25,8 +34,7 @@ scp fever.py pi@<RASPBERRY_PI_IP>:/home/pi/
 ```
 ssh pi@<RASPBERRY_PI_IP>
 sudo apt-get update
-sudo apt-get install -y python3-opencv libatlas-base-dev libjasper-dev \
-    libhdf5-dev libqt4-dev
+sudo apt-get install -y python3-venv python3-opencv libatlas-base-dev libjasper-dev libhdf5-dev libqt4-dev git
 python3 -m venv venv && . venv/bin/activate
 pip3 install --no-cache-dir tensorflow
 pip3 install opencv-contrib-python
