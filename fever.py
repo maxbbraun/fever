@@ -48,58 +48,63 @@ def main(_):
     # Start the data processing loop.
     with Lepton() as lepton:
         while True:
-            start_time = time()
+            try:
+                start_time = time()
 
-            # Acquire ambient sensor readings.
-            if not ambient.get_sensor_data():
-                logging.warning('Ambient sensor data not ready')
-            ambient_data = ambient.data
-            logging.debug('Ambient temperature: %.f °C'
-                          % ambient_data.temperature)
-            logging.debug('Ambient pressure: %.f hPa'
-                          % ambient_data.pressure)
-            logging.debug('Ambient humidity: %.f %%'
-                          % ambient_data.humidity)
+                # Acquire ambient sensor readings.
+                if not ambient.get_sensor_data():
+                    logging.warning('Ambient sensor data not ready')
+                ambient_data = ambient.data
+                logging.debug('Ambient temperature: %.f °C'
+                              % ambient_data.temperature)
+                logging.debug('Ambient pressure: %.f hPa'
+                              % ambient_data.pressure)
+                logging.debug('Ambient humidity: %.f %%'
+                              % ambient_data.humidity)
 
-            # Get the latest frame from the thermal camera.
-            lepton.capture(data_buffer=raw_buffer)
+                # Get the latest frame from the thermal camera.
+                lepton.capture(data_buffer=raw_buffer)
 
-            # Prepare the raw temperature data for face detection: Map to a
-            # normal range before reducing the bit depth and min/max normalize
-            # for better contrast before converting to RGB.
-            scaled_buffer = np.uint8((raw_buffer - FLAGS.min_temperature)
-                                     // scale_factor)
-            cv2.normalize(src=scaled_buffer, dst=scaled_buffer, alpha=0,
-                          beta=255, norm_type=cv2.NORM_MINMAX)
-            cv2.cvtColor(src=scaled_buffer, dst=rgb_buffer,
-                         code=cv2.COLOR_GRAY2RGB)
+                # Prepare the raw temperature data for face detection: Map to a
+                # normal range before reducing the bit depth and min/max
+                # normalize for better contrast before converting to RGB.
+                scaled_buffer = np.uint8((raw_buffer - FLAGS.min_temperature)
+                                         // scale_factor)
+                cv2.normalize(src=scaled_buffer, dst=scaled_buffer, alpha=0,
+                              beta=255, norm_type=cv2.NORM_MINMAX)
+                cv2.cvtColor(src=scaled_buffer, dst=rgb_buffer,
+                             code=cv2.COLOR_GRAY2RGB)
 
-            # Detect any faces in the frame.
-            faces, _ = cv.detect_face(rgb_buffer,
-                                      threshold=FLAGS.face_confidence)
+                # Detect any faces in the frame.
+                faces, _ = cv.detect_face(rgb_buffer,
+                                          threshold=FLAGS.face_confidence)
 
-            # TODO: Estimate distance based on face size.
+                # TODO: Estimate distance based on face size.
 
-            # TODO: Model thermal attenuation based on distance and ambient
-            #       temperature, pressure, and humidity.
+                # TODO: Model thermal attenuation based on distance and ambient
+                #       temperature, pressure, and humidity.
 
-            # Find the (highest) temperature of each face.
-            if len(faces) == 1:
-                logging.info('1 person')
-            else:
-                logging.info('%d people' % len(faces))
-            for face in faces:
-                crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
-                if crop.size == 0:
-                    logging.warning('Empty crop')
-                    continue
-                temperature = np.max(crop)
-                logging.info(format_temperature(temperature))
+                # Find the (highest) temperature of each face.
+                if len(faces) == 1:
+                    logging.info('1 person')
+                else:
+                    logging.info('%d people' % len(faces))
+                for face in faces:
+                    crop = raw_buffer[face[0]:face[2], face[1]:face[3]]
+                    if crop.size == 0:
+                        logging.warning('Empty crop')
+                        continue
+                    temperature = np.max(crop)
+                    logging.info(format_temperature(temperature))
 
-            # Calculate timing stats.
-            duration = time() - start_time
-            logging.debug('Frame took %.f ms (%.2f Hz)' % (
-                duration * 1000, 1 / duration))
+                # Calculate timing stats.
+                duration = time() - start_time
+                logging.debug('Frame took %.f ms (%.2f Hz)' % (
+                    duration * 1000, 1 / duration))
+
+            # Stop on SIGINT.
+            except KeyboardInterrupt:
+                break
 
 
 if __name__ == '__main__':
