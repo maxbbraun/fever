@@ -41,8 +41,9 @@ def main(_):
     ambient.set_gas_status(bme680.DISABLE_GAS_MEAS)
 
     # Initialize thermal image buffers.
-    raw_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint16)
-    rgb_buffer = np.ndarray((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
+    raw_buffer = np.zeros((Lepton.ROWS, Lepton.COLS, 1), dtype=np.int16)
+    scaled_buffer = np.zeros((Lepton.ROWS, Lepton.COLS, 1), dtype=np.uint8)
+    rgb_buffer = np.zeros((Lepton.ROWS, Lepton.COLS, 3), dtype=np.uint8)
     scale_factor = (FLAGS.max_temperature - FLAGS.min_temperature) // 255
 
     # Start the data processing loop.
@@ -68,8 +69,8 @@ def main(_):
                 # Prepare the raw temperature data for face detection: Map to a
                 # normal range before reducing the bit depth and min/max
                 # normalize for better contrast before converting to RGB.
-                scaled_buffer = np.uint8((raw_buffer - FLAGS.min_temperature)
-                                         // scale_factor)
+                np.clip((raw_buffer - FLAGS.min_temperature) // scale_factor,
+                        0, 255, out=scaled_buffer)
                 cv2.normalize(src=scaled_buffer, dst=scaled_buffer, alpha=0,
                               beta=255, norm_type=cv2.NORM_MINMAX)
                 cv2.cvtColor(src=scaled_buffer, dst=rgb_buffer,
