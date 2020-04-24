@@ -45,14 +45,14 @@ git clone https://github.com/groupgets/pylepton.git
 cd pylepton && python setup.py install && cd ..
 ```
 
-## Run
-
 ```bash
-ssh pi@<RASPBERRY_PI_IP>
-
 . venv/bin/activate
 export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1
+```
 
+## Detect
+
+```bash
 python fever.py --verbosity=1
 ```
 
@@ -65,19 +65,20 @@ I0410 18:11:23.993699 1995587312 fever.py:55] Ambient temperature: 24 °C
 I0410 18:11:23.994379 1995587312 fever.py:57] Ambient pressure: 1013 hPa
 I0410 18:11:23.994970 1995587312 fever.py:59] Ambient humidity: 42 %
 I0410 18:11:25.208623 1995587312 fever.py:85] 1 person
-I0410 18:11:25.210044 1995587312 fever.py:94] 33 °C
+I0410 18:11:25.210044 1995587312 fever.py:94] 34 °C
 ...
 ```
 
 ## Visualize
 
 ```bash
-ssh pi@<RASPBERRY_PI_IP>
-
-. venv/bin/activate
-export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1
-
-python visualize.py
+python fever.py --visualize
 ```
 
-![visualize](visualize.png)
+![Visualize and detect](visualize-detect.png)
+
+```bash
+python fever.py --visualize --nodetect
+```
+
+![Visualize](visualize.png)
