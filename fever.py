@@ -21,6 +21,7 @@ flags.DEFINE_bool('detect', True, 'Whether to run face detection.')
 flags.DEFINE_bool('visualize', False, 'Whether to visualize the thermal '
                   'image.')
 
+# https://ai.googleblog.com/2019/08/turbo-improved-rainbow-colormap-for.html
 TURBO_COLORMAP = np.array([
     [48, 18, 59], [50, 21, 67], [51, 24, 74], [52, 27, 81],
     [53, 30, 88], [54, 33, 95], [55, 36, 102], [56, 39, 109],
