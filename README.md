@@ -56,9 +56,7 @@ export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1
 
 ```bash
 python fever.py --verbosity=1
-```
 
-```bash
 I0410 18:11:23.993699 1995587312 fever.py:55] Ambient temperature: 24 °C
 I0410 18:11:23.994379 1995587312 fever.py:57] Ambient pressure: 1013 hPa
 I0410 18:11:23.994970 1995587312 fever.py:59] Ambient humidity: 42 %
@@ -76,3 +74,31 @@ I0410 18:11:25.210044 1995587312 fever.py:94] 34 °C
 | ![Visualize and detect](visualize-detect.png) | ![Visualize](visualize.png) |
 | :-: | :-: |
 | `python fever.py --visualize` | `python fever.py --visualize --nodetect` |
+
+## Flags
+
+```bash
+python fever.py --help
+
+       USAGE: fever.py [flags]
+flags:
+
+fever.py:
+  --[no]detect: Whether to run face detection.
+    (default: 'true')
+  --[no]display_metric: Whether to display metric units.
+    (default: 'true')
+  --face_confidence: The confidence threshold for face detection.
+    (default: '0.5')
+    (a number)
+  --max_temperature: The maximum temperature in centikelvin (for enhancing image contrast).
+    (default: '37315')
+    (an integer)
+  --min_temperature: The minimum temperature in centikelvin (for enhancing image contrast).
+    (default: '23715')
+    (an integer)
+  --[no]visualize: Whether to visualize the thermal image.
+    (default: 'false')
+
+Try --helpfull to get a list of all flags.
+```
