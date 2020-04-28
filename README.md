@@ -2,7 +2,7 @@
 
 A contactless fever thermometer with auto-aim. Combines a thermal camera with face detection.
 
-⚠️ ***This is an incomplete prototype. It is not a medical device. See [issues](issues) for remaining work.***
+⚠️ ***This is an incomplete prototype. It is not a medical device. See [issues](https://github.com/maxbbraun/fever/issues) for remaining work.***
 
 ## Parts
 
