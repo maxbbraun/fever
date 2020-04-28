@@ -1,6 +1,8 @@
 # FEVER
 
-A contactless fever thermometer with auto-aim. Combines a thermal camera with face detection and uses ambient sensors for calibration.
+A contactless fever thermometer with auto-aim. Combines a thermal camera with face detection.
+
+⚠️ ***This is an incomplete prototype. It is not a medical device. See [issues](issues) for remaining work.***
 
 ## Parts
 
@@ -10,12 +12,12 @@ A contactless fever thermometer with auto-aim. Combines a thermal camera with fa
 
 ## Assembly
 
-![breadboard front](breadboard-front.jpg)
-![breadboard back](breadboard-back.jpg)
+| ![breadboard front](breadboard-front.jpg) | ![breadboard back](breadboard-back.jpg) |
+| - | - |
 
 ## Setup
 
-Image [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)
+Image [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
 
 `sudo raspi-config`
 - `Network Options > Wi-fi`
@@ -28,11 +30,11 @@ Image [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)
 
 ```bash
 git clone https://github.com/maxbbraun/fever.git && cd fever
-scp fever.py pi@<RASPBERRY_PI_IP>:/home/pi/
+scp fever.py pi@192.168.x.x:/home/pi/
 ```
 
 ```bash
-ssh pi@<RASPBERRY_PI_IP>
+ssh pi@192.168.x.x
 
 sudo apt-get update
 sudo apt-get install -y python3-venv python3-opencv libatlas-base-dev libjasper-dev libhdf5-dev libqt4-dev git
@@ -50,7 +52,7 @@ cd pylepton && python setup.py install && cd ..
 export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1
 ```
 
-## Detect
+## Run
 
 ```bash
 python fever.py --verbosity=1
@@ -71,14 +73,6 @@ I0410 18:11:25.210044 1995587312 fever.py:94] 34 °C
 
 ## Visualize
 
-```bash
-python fever.py --visualize
-```
-
-![Visualize and detect](visualize-detect.png)
-
-```bash
-python fever.py --visualize --nodetect
-```
-
-![Visualize](visualize.png)
+| ![Visualize and detect](visualize-detect.png) | ![Visualize](visualize.png) |
+| :-: | :-: |
+| `python fever.py --visualize` | `python fever.py --visualize --nodetect` |
