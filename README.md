@@ -1,4 +1,4 @@
-# FEVER
+# Fever
 
 A contactless fever thermometer with auto-aim. Combines a thermal camera with face detection.
 
