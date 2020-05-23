@@ -3,8 +3,9 @@ from absl import flags
 from absl import logging
 import bme680
 import cv2
-import cvlib as cv
+from edgetpu.detection.engine import DetectionEngine
 import numpy as np
+from PIL import Image
 from pylepton import Lepton
 from smbus2 import SMBus
 from time import time
@@ -14,8 +15,14 @@ flags.DEFINE_integer('min_temperature', 23715, 'The minimum temperature in '
                      'centikelvin (for enhancing image contrast).')
 flags.DEFINE_integer('max_temperature', 37315, 'The maximum temperature in '
                      'centikelvin (for enhancing image contrast).')
+flags.DEFINE_string('face_model',
+                    'thermal_face_automl_edge_fast_edgetpu.tflite',
+                    'The TF Lite face detection model file compiled for Edge '
+                    'TPU.')
 flags.DEFINE_float('face_confidence', 0.5,
                    'The confidence threshold for face detection.')
+flags.DEFINE_integer('max_num_faces', 10, 'The maximum supported number of '
+                     'faces detected per frame.')
 flags.DEFINE_bool('display_metric', True, 'Whether to display metric units.')
 flags.DEFINE_bool('detect', True, 'Whether to run face detection.')
 flags.DEFINE_bool('visualize', False, 'Whether to visualize the thermal '
@@ -98,9 +105,13 @@ LABEL_SCALE = 1
 LABEL_THICKNESS = 2
 
 
-def get_temperature(temperatures, face):
+def get_temperature(temperatures, bbox):
     # Consider the raw temperatures insides the face bounding box.
-    crop = temperatures[face[1]:face[3], face[0]:face[2]]
+    left = int(bbox[0, 0])
+    top = int(bbox[0, 1])
+    right = int(bbox[1, 0])
+    bottom = int(bbox[1, 1])
+    crop = temperatures[top:bottom, left:right]
     if crop.size == 0:
         return None
 
@@ -135,6 +146,9 @@ def main(_):
         ambient.set_temperature_oversample(bme680.OS_8X)
         ambient.set_filter(bme680.FILTER_SIZE_3)
         ambient.set_gas_status(bme680.DISABLE_GAS_MEAS)
+
+        # Load the face detection model.
+        face_detector = DetectionEngine(FLAGS.face_model)
 
     # Initialize thermal image buffers.
     raw_buffer = np.zeros((Lepton.ROWS, Lepton.COLS, 1), dtype=np.int16)
@@ -190,8 +204,13 @@ def main(_):
                                  code=cv2.COLOR_GRAY2RGB)
 
                     # Detect any faces in the frame.
-                    faces, _ = cv.detect_face(rgb_buffer,
-                                              threshold=FLAGS.face_confidence)
+                    faces = face_detector.detect_with_image(
+                        Image.fromarray(rgb_buffer),
+                        threshold=FLAGS.face_confidence,
+                        top_k=FLAGS.max_num_faces,
+                        keep_aspect_ratio=True,  # Better quality.
+                        relative_coord=False,  # Expect pixel coordinates.
+                        resample=Image.BILINEAR)  # Good enough and fast.
 
                     # TODO: Estimate distance based on face size.
 
@@ -204,7 +223,8 @@ def main(_):
                     else:
                         logging.info('%d people' % len(faces))
                     for face in faces:
-                        temperature = get_temperature(raw_buffer, face)
+                        temperature = get_temperature(raw_buffer,
+                                                      face.bounding_box)
                         if not temperature:
                             logging.warning('Empty crop')
                             continue
@@ -225,17 +245,19 @@ def main(_):
                     if FLAGS.detect:
                         # Draw the face bounding boxes and temperature.
                         for face in faces:
+                            bbox = face.bounding_box
                             top_left = (
-                                int(window_scale_factor_x * face[0]),
-                                int(window_scale_factor_y * face[1]))
+                                int(window_scale_factor_x * bbox[0, 0]),
+                                int(window_scale_factor_y * bbox[0, 1]))
                             bottom_right = (
-                                int(window_scale_factor_x * face[2]),
-                                int(window_scale_factor_y * face[3]))
+                                int(window_scale_factor_x * bbox[1, 0]),
+                                int(window_scale_factor_y * bbox[1, 1]))
                             cv2.rectangle(window_buffer, top_left,
                                           bottom_right, LINE_COLOR,
                                           LINE_THICKNESS)
 
-                            temperature = get_temperature(raw_buffer, face)
+                            temperature = get_temperature(raw_buffer,
+                                                          face.bounding_box)
                             if not temperature:
                                 continue
                             label = format_temperature(temperature,
