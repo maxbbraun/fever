@@ -129,11 +129,11 @@ fever.py:
   --max_num_faces: The maximum supported number of faces detected per frame.
     (default: '10')
     (an integer)
-  --max_temperature: The maximum temperature in centikelvin (for enhancing image contrast).
-    (default: '37315')
+  --max_temperature: The maximum expected body temperature in centikelvin.
+    (default: '31815')
     (an integer)
-  --min_temperature: The minimum temperature in centikelvin (for enhancing image contrast).
-    (default: '23715')
+  --min_temperature: The minimum expected body temperature in centikelvin.
+    (default: '29815')
     (an integer)
   --[no]visualize: Whether to visualize the thermal image.
     (default: 'false')
