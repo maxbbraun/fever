@@ -12,10 +12,10 @@ from smbus2 import SMBus
 from time import time
 
 FLAGS = flags.FLAGS
-flags.DEFINE_integer('min_temperature', 23715, 'The minimum temperature in '
-                     'centikelvin (for enhancing image contrast).')
-flags.DEFINE_integer('max_temperature', 37315, 'The maximum temperature in '
-                     'centikelvin (for enhancing image contrast).')
+flags.DEFINE_integer('min_temperature', 29815, 'The minimum expected body '
+                     'temperature in centikelvin.')
+flags.DEFINE_integer('max_temperature', 31815, 'The maximum expected body '
+                     'temperature in centikelvin.')
 flags.DEFINE_string('face_model',
                     'thermal_face_automl_edge_fast_edgetpu.tflite',
                     'The TF Lite face detection model file compiled for Edge '
