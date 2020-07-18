@@ -9,10 +9,10 @@
 | Part | Info | Price (2020) |
 | :- | :- | -: |
 | FLIR Lepton 3.5 | Thermal camera module ([docs](https://groupgets.com/manufacturers/flir/products/lepton-3-5)) | [$199.00](https://www.digikey.com/product-detail/en/flir-lepton/500-0771-01/500-0771-01-ND/7606616) |
-| PureThermal Mini | Thermal camera dev board ([docs](https://groupgets.com/manufacturers/getlab/products/purethermal-mini-flir-lepton-smart-i-o-module)) | [$99.00](https://www.digikey.com/product-detail/en/groupgets-llc/PURETHERMAL-M/2077-PURETHERMAL-M-ND/9866289) |
+| PureThermal Mini | Thermal camera dev board ([docs](https://groupgets.com/manufacturers/getlab/products/purethermal-mini-flir-lepton-smart-i-o-module), [library](https://github.com/groupgets/purethermal1-uvc-capture#uvc-radiometrypy)) | [$99.00](https://www.digikey.com/product-detail/en/groupgets-llc/PURETHERMAL-M/2077-PURETHERMAL-M-ND/9866289) |
 | BME680 Breakout Board | Ambient temperature, pressure, and humidity sensor ([library](https://github.com/pimoroni/bme680-python)) | [$23.95](https://www.sparkfun.com/products/15743) |
-| Raspberry Pi 4 Model B | Tiny computer ([docs](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)) | [$35.00](https://www.sparkfun.com/products/15446)
-| Coral USB Accelerator | Faster face detection ([docs](https://coral.ai/docs/accelerator/get-started/)) | [$59.99](https://coral.ai/products/accelerator/) |
+| Raspberry Pi 4 Model B | Tiny computer ([docs](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)) | [$35.00](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
+| Coral USB Accelerator | Faster face detection ([docs](https://coral.ai/docs/accelerator/get-started/), [library](https://github.com/google-coral/edgetpu)) | [$59.99](https://coral.ai/products/accelerator/) |
 
 ![Parts](parts.jpg)
 
@@ -25,7 +25,10 @@ Image [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) and use `sudo 
 - `Interfacing Options > SPI`
 - `Interfacing Options > I2C`
 
+Enable access to the thermal camera over [UVC](https://en.wikipedia.org/wiki/USB_video_device_class):
 ```bash
+cd /tmp
+
 git clone https://github.com/groupgets/libuvc
 cd libuvc
 mkdir build
@@ -33,9 +36,7 @@ cd build
 cmake ..
 make
 sudo make install
-```
 
-```bash
 sudo sh -c "echo 'SUBSYSTEMS==\"usb\", ATTRS{idVendor}==\"1e4e\", ATTRS{idProduct}==\"0100\", SYMLINK+=\"pt1\", GROUP=\"usb\", MODE=\"666\"' >> /etc/udev/rules.d/99-pt1.rules"
 
 ```
