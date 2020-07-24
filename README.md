@@ -12,7 +12,7 @@
 | PureThermal Mini | Thermal camera dev board ([docs](https://groupgets.com/manufacturers/getlab/products/purethermal-mini-flir-lepton-smart-i-o-module), [library](https://github.com/groupgets/purethermal1-uvc-capture#uvc-radiometrypy)) | [$99.00](https://www.digikey.com/product-detail/en/groupgets-llc/PURETHERMAL-M/2077-PURETHERMAL-M-ND/9866289) |
 | BME680 Breakout Board | Ambient temperature, pressure, and humidity sensor ([library](https://github.com/pimoroni/bme680-python)) | [$23.95](https://www.sparkfun.com/products/15743) |
 | Raspberry Pi 4 Model B | Tiny computer ([docs](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)) | [$35.00](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
-| Coral USB Accelerator | Faster face detection ([docs](https://coral.ai/docs/accelerator/get-started/), [library](https://github.com/google-coral/edgetpu)) | [$59.99](https://coral.ai/products/accelerator/) |
+| Coral USB Accelerator | Edge TPU for faster face detection ([docs](https://coral.ai/docs/accelerator/get-started/), [library](https://github.com/google-coral/edgetpu)) | [$59.99](https://coral.ai/products/accelerator/) |
 
 ![Parts](parts.jpg)
 
