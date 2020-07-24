@@ -68,7 +68,7 @@ pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-
 git clone https://github.com/maxbbraun/fever.git
 cd fever
 
-curl -O https://raw.githubusercontent.com/maxbbraun/thermal-face/master/models/thermal_face_automl_edge_fast_edgetpu.tflite
+curl -O https://github.com/maxbbraun/thermal-face/releases/download/v1.0/thermal_face_automl_edge_fast_edgetpu.tflite
 ```
 
 ## Run
